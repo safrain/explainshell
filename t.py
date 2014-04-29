@@ -1,9 +1,8 @@
-import logging, itertools, urllib
+import logging, itertools, urllib, json
 
 from explainshell import matcher, errors, util, store, config
 from explainshell.web import app, helpers
 
-logger = logging.getLogger(__name__)
 
 
 def explaincommand(command, store):
@@ -91,12 +90,9 @@ def explaincommand(command, store):
     return matches, helptext
 
 
-command = 'ssh      -I'
+command = raw_input()
 command = command[:1000] # trim commands longer than 1000 characters
 s = store.store('explainshell', config.MONGO_URI)
 matches, helptext = explaincommand(command, s)
-for m in matches:
-    print m['start'], m['end'] 
-for h in helptext:
-    print h[0]
+print json.dumps({'command': command, 'matches': matches, 'helptext': helptext})
 
