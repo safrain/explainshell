@@ -1,15 +1,26 @@
 <html>
 	<body>
-		<table style="text-align:center;border-spacing:0px;font-family:Ubuntu Mono">
+	<style>
+		* {
+			font-family: Ubuntu Mono;
+		}
+		.sep {
+			margin-top: 0;
+			margin-bottom: 0.3em;
+		}
+	</style>
+
+	<div style="width:400px;font-family:Ubuntu Mono">
+		<table style="text-align:center;border-spacing:1px;margin:auto;font-family:Ubuntu Mono">
 			<tr>
 				<% command.each { %>
-					<td style="padding:0px"><pre>${it}</pre></td>
+					<td style="padding:0px"><pre style="margin:0px">${it}</pre></td>
 				<% } %>
 			</tr>
 			<tr>
 				<% m.inject(0) {current,it -> %>
 					<% while(current < it.start) { %><td></td><%current += 1;}%>
-					<td colspan="${it.end - it.start}" style="border-bottom:1px solid;border-left:1px solid;border-right:1px solid;"></td>
+					<td colspan="${it.end - it.start}" style="height:5px;border-bottom:1px solid;border-left:1px solid;border-right:1px solid;"><span></span></td>
 					<% current+=it.end - it.start %>
 					<% return current %>
 				<% } %>
@@ -26,9 +37,14 @@
 			</tr>
 		</table>
 		
+		<div class="sep">================================================</div>
 		<% m.eachWithIndex {it,i -> %>
-			<div><span style="float:left">${i+1}</span><pre style="margin-left:2em">${it.explain}</pre></div>
+			<div><span style="float:left">${i+1}</span><pre style="margin-left:2em;white-space:pre-wrap;font-family:Ubuntu Mono">${it.explain.replaceAll('\n','').replaceAll(' +',' ')}</pre></div>
+			<% if(m.size() > i + 1){ %> 
+			<div class="sep">------------------------------------------------</div>
+			<% } %>
 		<% } %>
+	</div>
 	</body>
 
 </html>
