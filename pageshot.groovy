@@ -47,6 +47,11 @@ tmp.deleteOnExit()
 commands.each {
 	if(it[1].length() > MAX_COMMAND_LENGTH){
 		println "${it[0]} IGNORE"
+		http.request(POST) { h ->
+			uri.path = "/upload_explain.php?id=${it[0]}&status=ignore"
+			response.success = { resp -> println "${it[0]} REPORT OK" }
+			response.failure = { resp -> println "${it[0]} REPORT ERROR: ${resp.statusLine}" }
+		}
 		return
 	}
 	def ep = "python explain.py".execute()
@@ -54,6 +59,11 @@ commands.each {
 	def text = ep.in.text
 	if(!text) {
 		println "${it[0]} ERROR PYTHON"
+		http.request(POST) { h ->
+			uri.path = "/upload_explain.php?id=${it[0]}&status=error"
+			response.success = { resp -> println "${it[0]} REPORT OK" }
+			response.failure = { resp -> println "${it[0]} REPORT ERROR: ${resp.statusLine}" }
+		}
 		return
 	}
 	new groovy.json.JsonSlurper().parseText(text).with { json ->
@@ -71,12 +81,10 @@ commands.each {
 		                }.findAll { it.explain }.collect { it.explain = it.explain[0]; it }.findAll { it.explain.length() < MAX_EXPLAIN_LENGTH }
 		        ]
 		).writeTo(tmp.newWriter())
-		true
 	}
 	driver.get("file://${tmp}")	
-//	new File("${it[0]}.png").bytes = 
 	http.request(POST) { h ->
-		uri.path = "/uploadExplain.php?id=${it[0]}"
+		uri.path = "/upload_explain.php?id=${it[0]}"
 		body = driver.getScreenshotAs(OutputType.BYTES)
 		requestContentType = ContentType.BINARY
 		response.success = { resp -> println "${it[0]} OK" }
