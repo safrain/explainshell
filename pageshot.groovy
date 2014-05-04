@@ -17,7 +17,7 @@ def MAX_EXPLAIN_LENGTH = 300
 
 
 
-def http = new HTTPBuilder('http://4.commandlinefu.sinaapp.com')
+def http = new HTTPBuilder('http://commandlinefu.sinaapp.com')
 
 // [[id, command],...]
 def commands =  http.request(GET, TEXT) {
