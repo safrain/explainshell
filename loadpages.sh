@@ -5,5 +5,5 @@ function ctrl_c() {
 }
 for i in `find localpages`
 do
-	python manager.py $i --log info
+	python2.7 manager.py $i --log info
 done
